@@ -1,0 +1,37 @@
+-- Drop current Sakila database
+DROP DATABASE sakila;
+
+-- Restore Sakila to initial state
+source /zyfiles/mysql/sakila/sakila-schema.sql; 
+source /zyfiles/mysql/sakila/sakila-data.sql;
+
+-- Set default database to Sakila
+USE sakila;
+
+-- CREATE TABLE and ALTER TABLE statements go here
+CREATE TABLE phone(
+    phone_id INTEGER UNSIGNED NOT NULL PRIMARY KEY,
+    country_code INTEGER UNSIGNED NOT NULL,
+    phone_number INTEGER UNSIGNED NOT NULL,
+    phone_type VARCHAR(12)
+);
+
+ALTER TABLE address DROP COLUMN phone;
+
+ALTER TABLE customer 
+ADD COLUMN phone_id INTEGER UNSIGNED UNIQUE,
+ADD FOREIGN KEY (phone_id) REFERENCES phone(phone_id) 
+    ON DELETE SET NULL 
+    ON UPDATE CASCADE;
+
+ALTER TABLE staff
+ADD COLUMN phone_id INTEGER UNSIGNED UNIQUE,
+ADD FOREIGN KEY (phone_id) REFERENCES phone(phone_id)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE;
+
+ALTER TABLE store
+ADD COLUMN phone_id INTEGER UNSIGNED UNIQUE,
+ADD FOREIGN KEY (phone_id) REFERENCES phone(phone_id)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE;
