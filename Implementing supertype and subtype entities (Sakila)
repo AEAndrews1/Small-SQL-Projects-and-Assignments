@@ -1,0 +1,119 @@
+-- Initialize database
+DROP TABLE IF EXISTS customer, staff, address, store, person;
+
+-- Create address table
+CREATE TABLE address (
+  address_id SMALLINT UNSIGNED NOT NULL,
+  address VARCHAR(50) NOT NULL,
+  address2 VARCHAR(50),
+  district VARCHAR(20) NOT NULL,
+  city_id SMALLINT UNSIGNED NOT NULL,
+  postal_code VARCHAR(10),
+  phone VARCHAR(20),
+  location GEOMETRY NOT NULL,
+  last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (address_id)
+);
+
+-- Create store table
+CREATE TABLE store (
+  store_id TINYINT UNSIGNED NOT NULL,
+  manager_staff_id TINYINT UNSIGNED NOT NULL,
+  address_id SMALLINT UNSIGNED NOT NULL,
+  last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (store_id)
+);
+
+-- Create customer table
+CREATE TABLE customer (
+  customer_id SMALLINT UNSIGNED NOT NULL,
+  first_name VARCHAR(45) NOT NULL,
+  last_name VARCHAR(45) NOT NULL,
+  rewards_number CHAR(10) UNIQUE,
+  email VARCHAR(50),
+  address_id SMALLINT UNSIGNED,
+  active TINYINT NOT NULL DEFAULT '1',
+  create_date DATETIME NOT NULL,
+  last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (customer_id),
+  CONSTRAINT fk_customer_address FOREIGN KEY (address_id) REFERENCES address (address_id) 
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE
+);
+
+-- Create staff table
+CREATE TABLE staff (
+  staff_id TINYINT UNSIGNED NOT NULL,
+  first_name VARCHAR(45) NOT NULL,
+  last_name VARCHAR(45) NOT NULL,
+  address_id SMALLINT UNSIGNED,
+  picture BLOB,
+  email VARCHAR(50),
+  store_id TINYINT UNSIGNED NOT NULL,
+  username VARCHAR(16) UNIQUE,
+  password VARCHAR(40),
+  active TINYINT NOT NULL DEFAULT '1',
+  last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (staff_id),
+  CONSTRAINT fk_staff_address FOREIGN KEY (address_id) REFERENCES address (address_id) 
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_staff_store FOREIGN KEY (store_id) REFERENCES store (store_id) 
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE
+);
+
+
+-- CREATE TABLE statements go here
+CREATE TABLE person(
+    person_id SMALLINT UNSIGNED NOT NULL PRIMARY KEY,
+    first_name VARCHAR(45) NOT NULL,
+    last_name VARCHAR(45) NOT NULL,
+    address_id SMALLINT UNSIGNED,
+    email VARCHAR(50),
+    active TINYINT NOT NULL DEFAULT '1',
+    last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_person_address FOREIGN KEY (address_id) REFERENCES address (address_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+ALTER TABLE customer DROP FOREIGN KEY fk_customer_address;
+ALTER TABLE staff DROP FOREIGN KEY fk_staff_address;
+
+ALTER TABLE customer DROP PRIMARY KEY;
+ALTER TABLE staff DROP PRIMARY KEY;
+
+ALTER TABLE customer
+    DROP COLUMN first_name,
+    DROP COLUMN last_name,
+    DROP COLUMN address_id,
+    DROP COLUMN email,
+    DROP COLUMN customer_id,
+    DROP COLUMN active,
+    DROP COLUMN last_update;
+
+ALTER TABLE staff
+    DROP COLUMN first_name,
+    DROP COLUMN last_name,
+    DROP COLUMN address_id,
+    DROP COLUMN email,
+    DROP COLUMN staff_id,
+    DROP COLUMN active,
+    DROP COLUMN last_update;
+
+ALTER TABLE customer    
+    ADD COLUMN person_id SMALLINT UNSIGNED NOT NULL PRIMARY KEY,
+    ADD CONSTRAINT fk_customer_person FOREIGN KEY (person_ID) 
+    REFERENCES person(person_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+ALTER TABLE staff
+    ADD COLUMN person_id SMALLINT UNSIGNED NOT NULL PRIMARY KEY,
+    ADD CONSTRAINT fk_staff_person FOREIGN KEY (person_ID) 
+    REFERENCES person(person_id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+
