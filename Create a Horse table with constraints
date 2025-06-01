@@ -1,0 +1,14 @@
+-- Initialize Horse table
+DROP TABLE IF EXISTS Horse;
+
+-- SQL statements go here 
+CREATE table Horse(
+    ID smallint unsigned AUTO_INCREMENT PRIMARY KEY,
+    RegisteredName varchar(15) NOT NULL,
+    Breed varchar(20) CHECK ( Breed IN('Egyptian Arab', 'Holsteiner', 
+    'Quarter Horse', 'Paint', 'Saddlebred')),
+    Height decimal(3, 1) Check (Height >= 10.0 AND Height <= 20.0),
+    BirthDate Date CHECK (BirthDate >= '2015-01-01')
+);
+
+SHOW COLUMNS FROM Horse;
