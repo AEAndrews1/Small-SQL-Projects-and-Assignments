@@ -1,0 +1,16 @@
+-- Drop actor table (if exists from prior run)
+DROP TABLE IF EXISTS actor;
+
+-- CREATE TABLE statement here
+CREATE TABLE `actor` (
+  `actor_id` smallint unsigned NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(45) NOT NULL,
+  `last_name` varchar(45) NOT NULL,
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`actor_id`),
+  KEY `idx_actor_last_name` (`last_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=201 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- Display a list of tables in the zybooksdb database
+SHOW TABLES;
